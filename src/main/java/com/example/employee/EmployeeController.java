@@ -1,4 +1,6 @@
 package com.example.employee;
+import com.example.employee.model.Address;
+import com.example.employee.model.Employee;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,36 +18,42 @@ public class EmployeeController {
     }
 
     @GetMapping("/health")
-    public String health(){
+    public String health() {
         return "Health ok";
     }
 
     @PostMapping
-    public Employee create(@RequestBody Employee employee){
-    return service.save(employee);
+    public Employee create(@RequestBody Employee employee) {
+        return service.save(employee);
     }
 
     @GetMapping
-    public List<Employee> getAllEmployee(){
+    public List<Employee> getAllEmployee() {
         return service.getAll();
     }
 
     @GetMapping("/{id}")
-    public Optional<Object> getEmployeeById(@PathVariable Long id) {
-        return service.getById(id);
+    public Employee getEmployeeById(@PathVariable Long id) {
+        return (Employee) service.getById(id)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
     }
 
-    // 4 UPDATE Employee
     @PutMapping("/{id}")
     public Employee updateEmployee(@PathVariable Long id,
                                    @RequestBody Employee employee) {
         return service.update(id, employee);
     }
 
-    //  DELETE Employee
     @DeleteMapping("/{id}")
     public String deleteEmployee(@PathVariable Long id) {
         service.delete(id);
         return "Employee deleted successfully";
+    }
+
+    // ✅ SINGLE address API
+    @PutMapping("/{id}/address")
+    public Employee saveOrUpdateAddress(@PathVariable Long id,
+                                        @RequestBody Address address) {
+        return service.updateAddress(id, address);
     }
 }

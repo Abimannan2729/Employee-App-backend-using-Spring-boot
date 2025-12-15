@@ -1,5 +1,9 @@
-package com.example.employee;
+package com.example.employee.model;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.engine.internal.Cascade;
 
 @Entity
 @Table(name = "employees")
@@ -8,16 +12,31 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
+    @NotBlank
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @NotBlank
+    @Email
+    @Column(unique = true)
     private String email;
 
+    @NotBlank
     private String department;
 
+    @NotNull
     private double salary;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
+    private Address address;
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
     // Required by JPA
     public Employee() {
